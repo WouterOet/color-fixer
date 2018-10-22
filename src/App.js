@@ -9,6 +9,12 @@ class App extends Component {
         this.onClick = this.onClick.bind(this)
 
         this.replacements = [
+            { word: "/", replacement: "&#47;" },
+            { word: "->", replacement: "→" },
+            { word: "+", color: "purple" },
+            { word: "-", color: "purple" },
+            { word: "&#47;", color: "purple" },
+            { word: "*", color: "purple" },
             { word: "switch", color: "orange" },
             { word: "case", color: "orange" },
             { word: "private", color: "orange" },
@@ -17,14 +23,32 @@ class App extends Component {
             { word: "float", color: "orange" },
             { word: "var", color: "orange" },
             { word: "return", color: "orange" },
+            { word: "static", color: "orange" },
+            { word: "final", color: "orange" },
+            { word: "record", color: "orange" },
+            { word: "enum", color: "orange" },
+            { word: "default", color: "orange" },
+            { word: "interface", color: "orange" },
+            { word: "implements", color: "orange" },
             { word: "(", color: "darkgrey" },
             { word: ")", color: "darkgrey" },
             { word: "{", color: "darkgrey" },
             { word: "}", color: "darkgrey" },
             { word: ";", color: "darkgrey" },
-            { word: "static", color: "orange" },
-            { word: "final", color: "orange" },
-            { word: "->", replacement: "⭢" }
+            { word: ",", color: "darkgrey" },
+            { word: "<", color: "darkgrey" },
+            { word: ">", color: "darkgrey" },
+            { word: "::", color: "darkgrey" },
+            { word: "0", color: "blue"},
+            { word: "1", color: "blue"},
+            { word: "2", color: "blue"},
+            { word: "3", color: "blue"},
+            { word: "4", color: "blue"},
+            { word: "5", color: "blue"},
+            { word: "6", color: "blue"},
+            { word: "7", color: "blue"},
+            { word: "8", color: "blue"},
+            { word: "9", color: "blue"},
         ]
 
         this.state = {
@@ -35,19 +59,24 @@ class App extends Component {
     }
 
     onClick = (e) => {
+        let log = []
         let replaced = e.clipboardData.getData('Text')
         replaced = replaced.replace(new RegExp('\n', 'g'), "<br>")
-        replaced = replaced.replace(new RegExp(' ', 'g'), "PLACEHOLDER")
+        if(!this.state.logEnabled) replaced = replaced.replace(new RegExp(' ', 'g'), "PLACEHOLDER")
+        replaced = replaced.replace(/(".+?")/g, "<span style=\"color: darkgreen\">$1</span>")
+        log.push("strings: "+ replaced)
 
-        let log = []
+        debugger
+
         for (let replacement of this.replacements) {
             if (replacement.color)
                 replaced = replaced.replace(new RegExp(this.escapeRegExp(replacement.word), 'g'), "<span style=\"color: " + replacement.color + "\">" + replacement.word + "</span>")
             else {
                 replaced = replaced.replace(new RegExp(this.escapeRegExp(replacement.word), 'g'), replacement.replacement)
             }
-            log.push(replaced)
+            log.push(replacement.word + ": " + replaced)
         }
+
 
         replaced = replaced.replace(new RegExp('PLACEHOLDER', 'g'), "&nbsp;")
         log.push(replaced)
@@ -59,7 +88,7 @@ class App extends Component {
     }
 
     escapeRegExp = (string) => {
-        return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // $& means the whole matched string
+        return string.replace(/[.*+?^${}()|/[\]\\]/g, '\\$&') // $& means the whole matched string
     }
 
     render() {

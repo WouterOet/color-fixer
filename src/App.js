@@ -6,11 +6,13 @@ class App extends Component {
     constructor(props) {
         super(props)
         this.input = React.createRef()
-        this.onClick = this.onClick.bind(this)
+        this.onClick = this.onChange.bind(this)
 
         this.replacements = [
             { word: "/", replacement: "&#47;" },
             { word: "->", replacement: "→" },
+            { word: "<", replacement: "&lt;" },
+            { word: ">", replacement: "&gt;" },
             { word: "+", color: "purple" },
             { word: "-", color: "purple" },
             { word: "&#47;", color: "purple" },
@@ -36,8 +38,8 @@ class App extends Component {
             { word: "}", color: "darkgrey" },
             { word: ";", color: "darkgrey" },
             { word: ",", color: "darkgrey" },
-            { word: "<", color: "darkgrey" },
-            { word: ">", color: "darkgrey" },
+            { word: "&lt;", color: "darkgrey" },
+            { word: "&gt;", color: "darkgrey" },
             { word: "::", color: "darkgrey" },
             { word: "0", color: "blue"},
             { word: "1", color: "blue"},
@@ -58,9 +60,9 @@ class App extends Component {
         }
     }
 
-    onClick = (e) => {
+    onChange = (e) => {
         let log = []
-        let replaced = e.clipboardData.getData('Text')
+        let replaced = e.target.value
         replaced = replaced.replace(new RegExp('\n', 'g'), "<br>")
         if(!this.state.logEnabled) replaced = replaced.replace(new RegExp(' ', 'g'), "PLACEHOLDER")
         replaced = replaced.replace(/(".+?")/g, "<span style=\"color: darkgreen\">$1</span>")
@@ -96,7 +98,7 @@ class App extends Component {
             <div style={{margin: "10px"}}>
                 <div className="App" style={ { display: "flex" } }>
                     <div style={ { flex: "1 1 auto" } }>
-                        <textarea onPaste={ this.onClick } ref={ this.input }
+                        <textarea onChange={ this.onChange } ref={ this.input }
                                   style={ { width: "100%", height: "400px" } } />
                     </div>
                     <div style={ { flex: "1 1 auto", textAlign: "left", paddingLeft: "20px" } }>
